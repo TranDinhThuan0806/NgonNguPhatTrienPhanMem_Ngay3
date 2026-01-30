@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    
+    <title>Quản Lý Sản Phẩm</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 20px; background-color: #f4f4f4; }
+
+        /* --- CONTROL BAR --- */
+        .controls { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; }
+        .control-group { display: flex; gap: 10px; align-items: center; }
+        input, select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 8px 12px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px; transition: 0.3s; }
+        button:hover { background-color: #0056b3; }
+
+        /* --- TABLE STYLES --- */
+        table { width: 100%; border-collapse: collapse; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; table-layout: fixed; background: white; }
+        th { background-color: #333; color: white; padding: 12px; text-align: left; }
+
+        /* Cột hình ảnh rộng hơn để chứa ảnh lớn và gallery */
+        th:nth-child(1) { width: 50px; }
+        th:nth-child(2) { width: 180px; } 
+        th:nth-child(3) { width: auto; }
+        th:nth-child(4) { width: 100px; }
+        th:nth-child(5) { width: 30%; }
+
+        td { padding: 10px; border-bottom: 1px solid #ccc; vertical-align: top; }
+
+        tbody tr:nth-child(odd) { background-color: #ffffff; color: #000000; }
+        tbody tr:nth-child(even) { background-color: #000000; color: #ffffff; }
+
+        /* --- ẢNH (LOGIC MỚI) --- */
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Ảnh đại diện (từ Category) - LỚN */
+        .category-img {
+            width: 140px;
+            height: 140px;
+            object-fit: contain; /* Hiển thị toàn bộ */
+            border: 1px solid #ddd;
+            background: #eee;
+            border-radius: 4px;
+        }
+
+        /* Container ảnh chi tiết */
+        .gallery-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        /* Ảnh chi tiết (từ Product.images) - NHỎ */
+        .detail-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain; /* Hiển thị toàn bộ */
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            cursor: pointer;
+            background: #fff;
+            opacity: 0.8;
+            transition: 0.2s;
+        }
+
+        .detail-img:hover {
+            opacity: 1;
+            transform: scale(1.2);
+            border-color: #007bff;
+            z-index: 10;
+        }
+
+        .pagination { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+        #page-info { font-weight: bold; align-self: center;}
+    </style>
+</head>
+<body>
+
+    <h1>Danh Sách Sản Phẩm</h1>
+
+    <div class="controls">
+        <div class="control-group">
+            <label>Tìm kiếm:</label>
+            <input type="text" id="searchInput" placeholder="Nhập tên..." oninput="handleSearch()">
+        </div>
+        <div class="control-group">
+            <span>Sắp xếp:</span>
+            <button onclick="handleSort('price', 'asc')">Giá Tăng</button>
+            <button onclick="handleSort('price', 'desc')">Giá Giảm</button>
+            <button onclick="handleSort('title', 'asc')">Tên A-Z</button>
+            <button onclick="handleSort('title', 'desc')">Tên Z-A</button>
+        </div>
+        <div class="control-group">
+            <label>Hiển thị:</label>
+            <select id="pageSize" onchange="handlePageSize()">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Hình ảnh</th>
+                <th>Tên sản phẩm</th>
+                <th>Giá ($)</th>
+                <th>Mô tả</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <div class="pagination">
+        <button onclick="changePage(-1)">Trước</button>
+        <span id="page-info">Trang 1 / 1</span>
+        <button onclick="changePage(1)">Sau</button>
+    </div>
+
+    <script src="Main.js"></script>
+</body>
+</html>
